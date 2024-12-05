@@ -4,35 +4,39 @@ using UnityEngine;
 
 public class moving : MonoBehaviour
 {
-    public float speed = .05f; // init la vitesse du cube
-    public float sensitivityX = 0.1f;  // Sensibilité pour la rotation autour de l'axe X (horizontal)
-    public float sensitivityY = 0.1f;  // Sensibilité pour la rotation autour de l'axe Y (vertical)
-
-    private float rotationX = 0f;     // Stocke la rotation autour de l'axe X
-    private float rotationY = 0f;     // Stocke la rotation autour de l'axe Y
+    public Transform cameraTransform;
+    public float speed = 0.1f; // init la vitesse du cube
+    public float ratiospeed = 10; // ratio vitesse ( a changer en mode dev pour aller plus ou moins vite)
+    
 
     // Update is called once per frame
     void Update()
     {
-        // Déplacement en fonction de la direction où le cube fait face
-        float xDir = Input.GetAxis("Horizontal"); 
-        float yDir = Input.GetAxis("Vertical");
+        // Récupérer les entrées utilisateur
+        float xDir = Input.GetAxis("Horizontal"); // Mouvement latéral
+        float zDir = Input.GetAxis("Vertical");   // Mouvement avant/arrière
 
-        Vector3 moving = transform.forward * yDir + transform.right * xDir;
-        transform.position += moving * speed;
+        // Ne se déplacer que si une touche est pressée
+        if (zDir != 0 || xDir != 0)
+        {
+            // Calculer la direction de la caméra sur le plan horizontal
+            Vector3 cameraForward = cameraTransform.forward;
+            cameraForward.y = 0f; // Ignorer l'inclinaison verticale
+            cameraForward.Normalize();
 
-        // Récupère le mouvement de la souris
-        float mouseX = Input.GetAxis("Mouse X");
-        float mouseY = Input.GetAxis("Mouse Y");
+            // Calculer la direction du mouvement
+            Vector3 movementDirection = cameraForward * zDir + cameraTransform.right * xDir;
+            movementDirection.Normalize();
 
-        // Calcule la nouvelle rotation
-        rotationX += mouseX * sensitivityX;
-        rotationY -= mouseY * sensitivityY;
+            // Faire pivoter le cube pour qu'il fasse face à la direction du mouvement
+            if (movementDirection != Vector3.zero)
+            {
+                Quaternion targetRotation = Quaternion.LookRotation(movementDirection);
+                transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, 10f * Time.deltaTime);
+            }
 
-        // Limite la rotation sur l'axe Y pour éviter une rotation trop extrême
-        rotationY = Mathf.Clamp(rotationY, -90f, 90f);
-
-        // Applique la rotation au cube
-        transform.rotation = Quaternion.Euler(rotationY, rotationX, 0f);
+            // Avancer dans la direction calculée
+            transform.position += movementDirection * speed * ratiospeed;
+        }
     }
 }
