@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class moving : MonoBehaviour
 {
+    //defini la camera pour que le cube suive le momuvement de la camera orbitale
     public Transform cameraTransform;
     public float speed = 0.1f; // init la vitesse du cube
     public float ratiospeed = 10; // ratio vitesse ( a changer en mode dev pour aller plus ou moins vite)
