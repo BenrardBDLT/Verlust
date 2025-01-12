@@ -8,8 +8,19 @@ public class moving : MonoBehaviour
     public Transform cameraTransform;
     public float speed = 0.1f; // init la vitesse du cube
     public float ratiospeed = 10; // ratio vitesse ( a changer en mode dev pour aller plus ou moins vite)
-    
+    public float jumpForce = 20f; // Force du saut
+    private bool isGrounded = true;//verifie si le cube est sau sol (empeche jump infini)
+    private Rigidbody rb;
 
+    void Start()
+        {
+            // Récupérer le Rigidbody attaché à l'objet
+            rb = GetComponent<Rigidbody>();
+            if (rb == null)
+            {
+                Debug.LogError("Aucun Rigidbody trouvé sur l'objet !");
+            }
+        }
     // Update is called once per frame
     void Update()
     {
@@ -38,6 +49,20 @@ public class moving : MonoBehaviour
 
             // Avancer dans la direction calculée
             transform.position += movementDirection * speed * ratiospeed;
+        }
+        // Gestion du saut
+        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        {
+            rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
+            isGrounded = false; // Empêcher de sauter plusieurs fois
+        }
+    }
+    // Détection des collisions pour savoir si le cube est au sol
+    private void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.CompareTag("Ground"))
+        {
+            isGrounded = true; // Le cube touche le sol
         }
     }
 }
