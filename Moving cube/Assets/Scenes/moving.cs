@@ -8,7 +8,7 @@ public class moving : MonoBehaviour
     public Transform cameraTransform;
     public float speed = 0.1f; // init la vitesse du cube
     public float ratiospeed = 10; // ratio vitesse ( a changer en mode dev pour aller plus ou moins vite)
-    public float jumpForce = 20f; // Force du saut
+    public float jumpForce = 100f; // Force du saut
     private bool isGrounded = true;//verifie si le cube est sau sol (empeche jump infini)
     private Rigidbody rb;
 
