@@ -6,8 +6,7 @@ public class moving : MonoBehaviour
 {
     //defini la camera pour que le cube suive le momuvement de la camera orbitale
     public Transform cameraTransform;
-    public float speed = 0.1f; // init la vitesse du cube
-    public float ratiospeed = 10; // ratio vitesse ( a changer en mode dev pour aller plus ou moins vite)
+    public float speed = 0.5f; // init la vitesse du cube
     public float jumpForce = 100f; // Force du saut
     private bool isGrounded = true;//verifie si le cube est sau sol (empeche jump infini)
     private Rigidbody rb;
@@ -48,7 +47,7 @@ public class moving : MonoBehaviour
             }
 
             // Avancer dans la direction calculée
-            transform.position += movementDirection * speed * ratiospeed;
+            transform.position += movementDirection * speed;
         }
         // Gestion du saut
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
